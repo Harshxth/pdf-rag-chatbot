@@ -48,11 +48,6 @@ def build_vector_store(chunks):
         base_url=OLLAMA_HOST
     )
 
-    # Delete existing store first to avoid conflicts
-    import shutil
-    if os.path.exists(CHROMA_DIR):
-        shutil.rmtree(CHROMA_DIR)
-        print("Cleared old vector store")
 
     vectordb = Chroma.from_documents(
         documents=chunks,
@@ -65,12 +60,3 @@ def build_vector_store(chunks):
     print(f"Saved {count} chunks to vector store at {CHROMA_DIR}")
     
     return vectordb
-
-if __name__ == "__main__":
-    # Step 1: load and chunk
-    chunks = load_and_chunk("data/SecureAi.pdf")
-
-    # Step 2: embed and store
-    build_vector_store(chunks)
-
-    print("\nDone! Your PDF has been ingested into the vector store.")

@@ -117,7 +117,7 @@ Ollama runs as a separate container — models persist between restarts via a Do
 
 ```
 pdf-rag-chatbot/
-├── app.py              # Streamlit UI — upload PDFs, chat interface
+├── Streamlit.App.py    # Streamlit UI — upload PDFs, chat interface
 ├── ingest.py           # PDF loading, chunking, and vector store builder
 ├── rag_chain.py        # RAG pipeline — retriever + LLM chain
 ├── cli_test.py         # CLI tool for testing without UI

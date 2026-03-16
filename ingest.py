@@ -12,6 +12,7 @@ load_dotenv()
 CHROMA_DIR = "./chroma_db"
 
 # Ollama host — reads from .env, falls back to localhost
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
 
@@ -42,27 +43,32 @@ def build_vector_store(chunks):
     """
     print("Building embeddings — this may take a few minutes...")
 
-    # This model runs locally via Ollama to create embeddings
     embedder = OllamaEmbeddings(
-        model="llama3.1",
+        model=OLLAMA_MODEL,
         base_url=OLLAMA_HOST
     )
 
-    # Create the vector store from our chunks
-    # Chroma embeds each chunk and saves everything to CHROMA_DIR
+    # Delete existing store first to avoid conflicts
+    import shutil
+    if os.path.exists(CHROMA_DIR):
+        shutil.rmtree(CHROMA_DIR)
+        print("Cleared old vector store")
+
     vectordb = Chroma.from_documents(
         documents=chunks,
         embedding=embedder,
         persist_directory=CHROMA_DIR,
     )
 
-    print(f"Vector store saved to {CHROMA_DIR}")
+    # Verify it actually saved
+    count = vectordb._collection.count()
+    print(f"Saved {count} chunks to vector store at {CHROMA_DIR}")
+    
     return vectordb
-
 
 if __name__ == "__main__":
     # Step 1: load and chunk
-    chunks = load_and_chunk("test.pdf")
+    chunks = load_and_chunk("data/SecureAi.pdf")
 
     # Step 2: embed and store
     build_vector_store(chunks)

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CHROMA_DIR = "./chroma_db"
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
 
@@ -20,7 +21,7 @@ def get_qa_chain():
     """
 
     embedder = OllamaEmbeddings(
-        model="llama3.1",
+        model="llama3.1:8b",
         base_url=OLLAMA_HOST
     )
 
@@ -36,7 +37,7 @@ def get_qa_chain():
     )
 
     llm = ChatOllama(
-        model="llama3.1",
+        model="llama3.1:8b",
         base_url=OLLAMA_HOST,
         temperature=0.1,
     )
